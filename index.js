@@ -1,12 +1,10 @@
 import express, { request, response } from "express";
 const app = express();
 import { MongoClient } from "mongodb";
-const PORT = 4000;
+
 import * as dotenv from "dotenv";
 dotenv.config();
-//env-environment variables
-
-console.log(process.env.MONGO_URL);
+//env-environment variables-env
 
 const MONGO_URL = process.env.MONGO_URL;
 //welcome123raj;
@@ -191,4 +189,5 @@ app.put("/movies/:id", async function (request, response) {
   response.send(result);
 });
 
+const PORT = process.env.PORT; //-auto assign port
 app.listen(PORT, () => console.log(`server running in the PORT at ${PORT}`));
