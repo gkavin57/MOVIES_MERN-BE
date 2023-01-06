@@ -2,6 +2,10 @@ import express, { request, response } from "express";
 const app = express();
 import { MongoClient } from "mongodb";
 
+import moviesRouter from "./routes/movies.route.js";
+
+app.use(express.json()); //1.request middleware vantu apm thaa function move aaagum,middleware(inbuild) converts the body json to normal js object
+
 import * as dotenv from "dotenv";
 dotenv.config();
 //env-environment variables-env
@@ -128,66 +132,9 @@ app.get("/", (req, res) => {
   res.send("hello world");
 });
 
-app.get("/movies", async function (request, response) {
-  if (request.query.rating) {
-    request.query.rating = +request.query.rating;
-  }
-  console.log(request.query);
-  const movies = await client
-    .db("B40wd")
-    .collection("movies")
-    .find(request.query)
-    .toArray();
-  response.send(movies);
-  // console.log(movies);
-});
-
-app.get("/movies/:id", async function (request, response) {
-  const { id } = request.params;
-  const movie = await client
-    .db("B40wd")
-    .collection("movies")
-    .findOne({ id: id });
-
-  movie
-    ? response.send(movie)
-    : response.status(400).send({ message: "movie not found" });
-  console.log(id);
-});
-
-app.delete("/movies/:id", async function (request, response) {
-  const { id } = request.params;
-  const result = await client
-    .db("B40wd")
-    .collection("movies")
-    .deleteOne({ id: id });
-
-  result.deletedCount > 0 //object naala .delecount
-    ? response.send({ meaasge: "movie deleted successfully" }) //friendly message
-    : response.status(400).send({ message: "movie not found" });
-  console.log(result);
-});
-
-app.use(express.json()); //1.request middleware vantu apm thaa function move aaagum,middleware(inbuild) converts the body json to normal js object
-
-app.post("/movies", async function (request, response) {
-  const data = request.body;
-  console.log(data);
-  const result = await client.db("B40wd").collection("movies").insertMany(data); //db la normal object the store pannanum
-  response.send(result);
-});
-
-app.put("/movies/:id", async function (request, response) {
-  const { id } = request.params;
-  const data = request.body;
-
-  const result = await client
-    .db("B40wd")
-    .collection("movies")
-    .updateOne({ id: id }, { $set: data });
-  console.log(result);
-  response.send(result);
-});
+app.use("/movies", moviesRouter);
 
 const PORT = process.env.PORT; //-auto assign port
 app.listen(PORT, () => console.log(`server running in the PORT at ${PORT}`));
+
+export { client };
