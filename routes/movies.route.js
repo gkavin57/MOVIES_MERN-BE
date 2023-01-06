@@ -1,5 +1,11 @@
 import Express from "express";
-import { client } from "../index.js";
+import {
+  getMovies,
+  getMovieById,
+  deleteMovieById,
+  createMovies,
+  updateMovieById,
+} from "../services/movies.service.js";
 
 const router = Express.Router();
 
@@ -8,21 +14,16 @@ router.get("/", async function (request, response) {
     request.query.rating = +request.query.rating;
   }
   console.log(request.query);
-  const movies = await client
-    .db("B40wd")
-    .collection("movies")
-    .find(request.query)
-    .toArray();
+
+  const movies = await getMovies(request);
+
   response.send(movies);
   // console.log(movies);
 });
 
 router.get("/:id", async function (request, response) {
   const { id } = request.params;
-  const movie = await client
-    .db("B40wd")
-    .collection("movies")
-    .findOne({ id: id });
+  const movie = await getMovieById(id);
 
   movie
     ? response.send(movie)
@@ -32,10 +33,7 @@ router.get("/:id", async function (request, response) {
 
 router.delete("/:id", async function (request, response) {
   const { id } = request.params;
-  const result = await client
-    .db("B40wd")
-    .collection("movies")
-    .deleteOne({ id: id });
+  const result = await deleteMovieById(id);
 
   result.deletedCount > 0 //object naala .delecount
     ? response.send({ meaasge: "movie deleted successfully" }) //friendly message
@@ -46,7 +44,7 @@ router.delete("/:id", async function (request, response) {
 router.post("/", async function (request, response) {
   const data = request.body;
   console.log(data);
-  const result = await client.db("B40wd").collection("movies").insertMany(data); //db la normal object the store pannanum
+  const result = await createMovies(data); //db la normal object the store pannanum
   response.send(result);
 });
 
@@ -54,10 +52,7 @@ router.put("/:id", async function (request, response) {
   const { id } = request.params;
   const data = request.body;
 
-  const result = await client
-    .db("B40wd")
-    .collection("movies")
-    .updateOne({ id: id }, { $set: data });
+  const result = await updateMovieById(id, data);
   console.log(result);
   response.send(result);
 });
