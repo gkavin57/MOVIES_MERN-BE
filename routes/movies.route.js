@@ -1,4 +1,5 @@
 import Express from "express";
+import { auth } from "../middleware/auth.js";
 import {
   getMovies,
   getMovieById,

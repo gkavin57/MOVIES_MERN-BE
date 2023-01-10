@@ -3,7 +3,7 @@ const app = express();
 import { MongoClient } from "mongodb";
 
 import moviesRouter from "./routes/movies.route.js";
-
+import userRouter from "./routes/user.router.js";
 app.use(express.json()); //1.request middleware vantu apm thaa function move aaagum,middleware(inbuild) converts the body json to normal js object
 
 import * as dotenv from "dotenv";
@@ -133,6 +133,33 @@ app.get("/", (req, res) => {
 });
 
 app.use("/movies", moviesRouter);
+app.use("/user", userRouter);
+
+const mobiles = [
+  {
+    model: "OnePlus 9 5G",
+    img: "https://m.media-amazon.com/images/I/61fy+u9uqPL._SX679_.jpg",
+    company: "Oneplus",
+  },
+  {
+    model: "Iphone 13 mini",
+    img: "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/iphone-13-mini-blue-select-2021?wid=470&hei=556&fmt=jpeg&qlt=95&.v=1645572315986",
+    company: "Apple",
+  },
+  {
+    model: "Samsung s21 ultra",
+    img: "https://m.media-amazon.com/images/I/81kfA-GtWwL._SY606_.jpg",
+    company: "Samsung",
+  },
+  {
+    model: "Xiomi mi 11",
+    img: "https://m.media-amazon.com/images/I/51K4vNxMAhS._AC_SX522_.jpg",
+    company: "Xiomi",
+  },
+];
+app.get("/mobiles", (request, response) => {
+  response.send(mobiles);
+});
 
 const PORT = process.env.PORT; //-auto assign port
 app.listen(PORT, () => console.log(`server running in the PORT at ${PORT}`));
