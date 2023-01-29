@@ -8,6 +8,7 @@ app.use(express.json()); //1.request middleware vantu apm thaa function move aaa
 import cors from "cors";
 app.use(cors());
 import * as dotenv from "dotenv";
+import { auth } from "./middleware/auth.js";
 dotenv.config();
 //env-environment variables-env
 
@@ -16,7 +17,6 @@ const MONGO_URL = process.env.MONGO_URL;
 const client = new MongoClient(MONGO_URL); //dial
 await client.connect(); //call --atten pana some time-->await podanum top level await
 console.log("mongo connected");
-
 // const movies = [
 //   {
 //     id: "99",
@@ -127,8 +127,7 @@ console.log("mongo connected");
 //     trailer: "https://youtu.be/NgsQ8mVkN8w",
 //     id: "109",
 //   },
-// ];
-
+// ]
 app.get("/", (req, res) => {
   res.send("hello world");
 });
@@ -136,7 +135,7 @@ app.get("/", (req, res) => {
 app.use("/movies", moviesRouter);
 app.use("/user", userRouter);
 
-app.get("/mobiles", async (request, response) => {
+app.get("/mobiles", auth, async (request, response) => {
   const mobiles = await client
     .db("B40wd")
     .collection("mobiles")
